@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
-body{
+body {
     margin:0;
     padding:0;
     background:linear-gradient(135deg,#ff758c,#ff7eb3);
@@ -18,27 +18,27 @@ body{
     transition:2s;
 }
 
-canvas{
+canvas {
     position:fixed;
     top:0;
     left:0;
     z-index:-1;
 }
 
-.box{
-    margin-top:120px;
+.box {
+    margin-top:10vh;
 }
 
-input{
-    padding:10px;
+input {
+    padding:1vh;
     border:none;
     border-radius:5px;
     font-size:1rem;
 }
 
-button{
-    padding:10px 20px;
-    margin-top:15px;
+button {
+    padding:1vh 2vw;
+    margin-top:2vh;
     border:none;
     border-radius:5px;
     background:white;
@@ -48,26 +48,26 @@ button{
     font-size:1rem;
 }
 
-#countdown{
-    font-size:60px;
-    margin-top:30px;
+#countdown {
+    font-size:8vw;
+    margin-top:3vh;
     display:none;
 }
 
-#message{
+#message {
     display:none;
-    margin-top:40px;
-    font-size:22px;
+    margin-top:5vh;
+    font-size:4vw;
     opacity:0;
     transition:3s;
 }
 
-.cursiveLine{
+.cursiveLine {
     position:absolute;
     width:100%;
     text-align:center;
     top:60%;
-    font-size:calc(16px + 1.5vw);
+    font-size:calc(16px + 4vw);
     font-family:'Great Vibes', cursive;
     color:white;
     opacity:0;
@@ -110,6 +110,7 @@ var herName = "RANI (QUEEN)";
 var canvas = document.getElementById("stars");
 var ctx = canvas.getContext("2d");
 
+// Resize canvas
 function resizeCanvas(){
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -119,6 +120,7 @@ window.addEventListener("resize",resizeCanvas);
 
 var stars=[], shootingStars=[], particles=[], hearts=[], fireworks=[], formingName=false;
 
+// Password check
 function checkPassword(){
     var correctPassword = atob("MjgwMjIwMDU=");
     var userPassword = document.getElementById("password").value;
@@ -134,6 +136,7 @@ function checkPassword(){
     }
 }
 
+// Countdown
 function startCountdown(){
     var count=5;
     var countdown=document.getElementById("countdown");
@@ -151,6 +154,7 @@ function startCountdown(){
     },1000);
 }
 
+// Show birthday message
 function showMessage(){
     var message=document.getElementById("message");
     message.style.display="block";
@@ -163,6 +167,7 @@ function showMessage(){
     },6000);
 }
 
+// Stars animation
 function startStars(){
     stars=[];
     for(var i=0;i<200;i++){
@@ -178,24 +183,27 @@ function startStars(){
     animate();
 }
 
+// Shooting star
 function createShootingStar(){
     shootingStars.push({
         x:Math.random()*canvas.width,
         y:0,
-        length:300,
+        length:canvas.width/4,
         speed:10
     });
 }
 
+// Heart particle
 function createHeart(){
     hearts.push({
         x:Math.random()*canvas.width,
         y:canvas.height,
-        size:10+Math.random()*10,
+        size:canvas.width/80 + Math.random()*canvas.width/80,
         speed:1+Math.random()*2
     });
 }
 
+// Fireworks
 function createFirework(x,y){
     for(let i=0;i<80;i++){
         fireworks.push({
@@ -208,6 +216,7 @@ function createFirework(x,y){
     }
 }
 
+// Animate everything
 function animate(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
@@ -276,6 +285,7 @@ function animate(){
     requestAnimationFrame(animate);
 }
 
+// Form stars into name
 function collectStarsIntoName(){
     formingName=true;
     particles=[];
