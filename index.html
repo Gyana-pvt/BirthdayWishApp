@@ -287,40 +287,46 @@ function animate(){
 
 // Form stars into name
 function collectStarsIntoName(){
-    formingName=true;
-    particles=[];
+    formingName = true;
+    particles = [];
 
-    let fontSize = Math.min(100, canvas.width/6);
-    ctx.font=`bold ${fontSize}px Arial`;
-    ctx.textAlign="center";
-    ctx.fillStyle="hotpink";
-    ctx.shadowColor="pink";
-    ctx.shadowBlur=20;
-    ctx.fillText(herName,canvas.width/2,canvas.height/2);
+    // Responsive font size
+    let fontSize = Math.min(100, canvas.width / 6);
+    ctx.font = `bold ${fontSize}px Arial`;
+    ctx.textAlign = "center";
+    ctx.fillStyle = "hotpink";
+    ctx.shadowColor = "pink";
+    ctx.shadowBlur = fontSize / 5; // proportional shadow
+    ctx.fillText(herName, canvas.width / 2, canvas.height / 2);
 
-    var imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // Get pixel data of the name
+    let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for(let y=0;y<canvas.height;y+=6){
-        for(let x=0;x<canvas.width;x+=6){
-            let index=(y*canvas.width+x)*4;
-            if(imageData.data[index+3]>128){
+    // Step size proportional to canvas size
+    let step = Math.max(4, canvas.width / 300);
+
+    for (let y = 0; y < canvas.height; y += step){
+        for (let x = 0; x < canvas.width; x += step){
+            let index = (y * canvas.width + x) * 4;
+            if (imageData.data[index + 3] > 128){ // if pixel is visible
                 particles.push({
-                    x:Math.random()*canvas.width,
-                    y:Math.random()*canvas.height,
-                    tx:x,
-                    ty:y
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    tx: x,
+                    ty: y
                 });
             }
         }
     }
 
-    createFirework(canvas.width/2,canvas.height/2);
-    setInterval(createHeart,500);
+    createFirework(canvas.width / 2, canvas.height / 2);
+    setInterval(createHeart, 500);
 
+    // Show the romantic line after stars form
     setTimeout(()=>{
-        document.getElementById("romanticLine").style.opacity="1";
-    },4000);
+        document.getElementById("romanticLine").style.opacity = "1";
+    }, 4000);
 }
 </script>
 
