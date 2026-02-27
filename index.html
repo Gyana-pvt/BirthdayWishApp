@@ -4,7 +4,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Universe Surprise 💖</title>
 
-<!-- Romantic Cursive Font -->
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
@@ -61,7 +60,6 @@ button{
     transition:3s;
 }
 
-/* Cursive Romantic Line */
 .cursiveLine{
     position:absolute;
     width:100%;
@@ -80,6 +78,10 @@ button{
 <body>
 
 <canvas id="stars"></canvas>
+
+<audio id="bgMusic" loop>
+  <source src="your-music-file.mp3" type="audio/mpeg">
+</audio>
 
 <div class="box" id="loginBox">
     <h2>🔐 Enter Password to Unlock Surprise 🔐</h2>
@@ -103,135 +105,214 @@ This little universe is just a small surprise from someone who loves you endless
 
 <script>
 
-var herName = "RANI(QUEEN)"; // ❤️ Yaha uska naam likho
+var herName = "RANI (QUEEN)";
 var canvas = document.getElementById("stars");
 var ctx = canvas.getContext("2d");
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-var stars = [];
-var particles = [];
-var formingName = false;
+window.addEventListener("resize",function(){
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+});
+
+var stars=[];
+var shootingStars=[];
+var particles=[];
+var hearts=[];
+var fireworks=[];
+var formingName=false;
 
 function checkPassword(){
-    var correctPassword = "12";
-    var userPassword = document.getElementById("password").value;
+var correctPassword=atob("MjgwMjIwMDU=");
+var userPassword=document.getElementById("password").value;
 
-    if(userPassword === correctPassword){
-        document.body.style.background="black";
-        document.getElementById("loginBox").style.display="none";
-        startStars();
-        startCountdown();
-    }else{
-        alert("Wrong Password 😜 Try Again!");
-    }
+if(userPassword===correctPassword){
+document.body.style.background="black";
+document.getElementById("loginBox").style.display="none";
+document.getElementById("bgMusic").play();
+startStars();
+startCountdown();
+}else{
+alert("Wrong Password 😜 Try Again!");
+}
 }
 
 function startCountdown(){
-    var count = 5;
-    var countdown = document.getElementById("countdown");
-    countdown.style.display="block";
+var count=5;
+var countdown=document.getElementById("countdown");
+countdown.style.display="block";
 
-    var interval=setInterval(function(){
-        countdown.innerHTML="⏳ "+count;
-        count--;
+var interval=setInterval(function(){
+countdown.innerHTML="⏳ "+count;
+count--;
 
-        if(count<0){
-            clearInterval(interval);
-            countdown.style.display="none";
-            showMessage();
-        }
-    },1000);
+if(count<0){
+clearInterval(interval);
+countdown.style.display="none";
+showMessage();
+}
+},1000);
 }
 
 function showMessage(){
-    var message=document.getElementById("message");
-    message.style.display="block";
+var message=document.getElementById("message");
+message.style.display="block";
+setTimeout(()=>{message.style.opacity="1";},100);
 
-    setTimeout(function(){
-        message.style.opacity="1";
-    },100);
-
-    setTimeout(function(){
-        message.style.opacity="0";
-        setTimeout(collectStarsIntoName,3000);
-    },6000);
+setTimeout(()=>{
+message.style.opacity="0";
+setTimeout(collectStarsIntoName,3000);
+},6000);
 }
 
 function startStars(){
-    stars=[];
-    for(var i=0;i<200;i++){
-        stars.push({
-            x:Math.random()*canvas.width,
-            y:Math.random()*canvas.height,
-            radius:Math.random()*2,
-            speed:Math.random()*0.5
-        });
-    }
-    animate();
+for(var i=0;i<200;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+radius:Math.random()*2,
+speed:Math.random()*0.5,
+alpha:Math.random(),
+alphaSpeed:0.02
+});
+}
+animate();
+}
+
+function createShootingStar(){
+shootingStars.push({
+x:Math.random()*canvas.width,
+y:0,
+length:300,
+speed:10
+});
+}
+
+function createHeart(){
+hearts.push({
+x:Math.random()*canvas.width,
+y:canvas.height,
+size:10+Math.random()*10,
+speed:1+Math.random()*2
+});
+}
+
+function createFirework(x,y){
+for(let i=0;i<80;i++){
+fireworks.push({
+x:x,
+y:y,
+angle:Math.random()*Math.PI*2,
+speed:2+Math.random()*4,
+alpha:1
+});
+}
 }
 
 function animate(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="white";
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    if(!formingName){
-        stars.forEach(function(s){
-            ctx.beginPath();
-            ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);
-            ctx.fill();
+if(!formingName){
+stars.forEach(s=>{
+ctx.globalAlpha=s.alpha;
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);
+ctx.fillStyle="white";
+ctx.fill();
+ctx.globalAlpha=1;
 
-            s.y+=s.speed;
-            if(s.y>canvas.height){
-                s.y=0;
-                s.x=Math.random()*canvas.width;
-            }
-        });
-    }else{
-        particles.forEach(function(p){
-            p.x+=(p.tx-p.x)*0.03;
-            p.y+=(p.ty-p.y)*0.03;
-            ctx.beginPath();
-            ctx.arc(p.x,p.y,2,0,Math.PI*2);
-            ctx.fill();
-        });
-    }
+s.y+=s.speed;
+s.alpha+=s.alphaSpeed;
+if(s.alpha>=1||s.alpha<=0)s.alphaSpeed*=-1;
+if(s.y>canvas.height){s.y=0;}
+});
 
-    requestAnimationFrame(animate);
+if(Math.random()<0.01)createShootingStar();
+
+shootingStars.forEach((s,i)=>{
+ctx.strokeStyle="white";
+ctx.beginPath();
+ctx.moveTo(s.x,s.y);
+ctx.lineTo(s.x+s.length,s.y+s.length);
+ctx.stroke();
+s.x+=s.speed;
+s.y+=s.speed;
+if(s.y>canvas.height)shootingStars.splice(i,1);
+});
+}else{
+particles.forEach(p=>{
+p.x+=(p.tx-p.x)*0.03;
+p.y+=(p.ty-p.y)*0.03;
+ctx.beginPath();
+ctx.arc(p.x,p.y,2,0,Math.PI*2);
+ctx.fillStyle="hotpink";
+ctx.fill();
+});
+}
+
+hearts.forEach((h,i)=>{
+ctx.fillStyle="pink";
+ctx.beginPath();
+ctx.arc(h.x,h.y,h.size,0,Math.PI*2);
+ctx.fill();
+h.y-=h.speed;
+if(h.y<0)hearts.splice(i,1);
+});
+
+fireworks.forEach((f,i)=>{
+ctx.globalAlpha=f.alpha;
+ctx.beginPath();
+ctx.arc(f.x,f.y,2,0,Math.PI*2);
+ctx.fillStyle="gold";
+ctx.fill();
+ctx.globalAlpha=1;
+
+f.x+=Math.cos(f.angle)*f.speed;
+f.y+=Math.sin(f.angle)*f.speed;
+f.alpha-=0.02;
+if(f.alpha<=0)fireworks.splice(i,1);
+});
+
+requestAnimationFrame(animate);
 }
 
 function collectStarsIntoName(){
-    formingName=true;
-    particles=[];
+formingName=true;
+particles=[];
 
-    ctx.font="bold 100px Arial";
-    ctx.textAlign="center";
-    ctx.fillText(herName,canvas.width/2,canvas.height/2);
+ctx.font="bold 100px Arial";
+ctx.textAlign="center";
+ctx.fillStyle="hotpink";
+ctx.shadowColor="pink";
+ctx.shadowBlur=20;
+ctx.fillText(herName,canvas.width/2,canvas.height/2);
 
-    var imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+var imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    for(let y=0;y<canvas.height;y+=6){
-        for(let x=0;x<canvas.width;x+=6){
-            let index=(y*canvas.width+x)*4;
-            if(imageData.data[index+3]>128){
-                particles.push({
-                    x:Math.random()*canvas.width,
-                    y:Math.random()*canvas.height,
-                    tx:x,
-                    ty:y
-                });
-            }
-        }
-    }
-
-    setTimeout(showFinalLine,4000);
+for(let y=0;y<canvas.height;y+=6){
+for(let x=0;x<canvas.width;x+=6){
+let index=(y*canvas.width+x)*4;
+if(imageData.data[index+3]>128){
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+tx:x,
+ty:y
+});
+}
+}
 }
 
-function showFinalLine(){
-    var line=document.getElementById("romanticLine");
-    line.style.opacity="1";
+createFirework(canvas.width/2,canvas.height/2);
+
+setInterval(createHeart,500);
+
+setTimeout(()=>{
+document.getElementById("romanticLine").style.opacity="1";
+},4000);
 }
 
 </script>
