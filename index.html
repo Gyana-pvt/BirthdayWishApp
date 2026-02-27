@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Universe Surprise 💖</title>
+
+<!-- Romantic Cursive Font -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    padding:0;
+    background:linear-gradient(135deg,#ff758c,#ff7eb3);
+    font-family:Arial;
+    text-align:center;
+    color:white;
+    overflow:hidden;
+    transition:2s;
+}
+
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:-1;
+}
+
+.box{
+    margin-top:120px;
+}
+
+input{
+    padding:10px;
+    border:none;
+    border-radius:5px;
+}
+
+button{
+    padding:10px 20px;
+    margin-top:15px;
+    border:none;
+    border-radius:5px;
+    background:white;
+    color:#ff4e50;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#countdown{
+    font-size:60px;
+    margin-top:30px;
+    display:none;
+}
+
+#message{
+    display:none;
+    margin-top:40px;
+    font-size:22px;
+    opacity:0;
+    transition:3s;
+}
+
+/* Cursive Romantic Line */
+.cursiveLine{
+    position:absolute;
+    width:100%;
+    text-align:center;
+    top:60%;
+    font-size:34px;
+    font-family:'Great Vibes', cursive;
+    color:white;
+    opacity:0;
+    transition:3s;
+    text-shadow:0 0 10px pink,0 0 20px hotpink;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="stars"></canvas>
+
+<div class="box" id="loginBox">
+    <h2>🔐 Enter Password to Unlock Surprise 🔐</h2>
+    <input type="password" id="password" placeholder="Enter Secret Password">
+    <br>
+    <button onclick="checkPassword()">Unlock</button>
+</div>
+
+<div id="countdown"></div>
+
+<div id="message">
+    <h1>🎉 Happy Birthday My Love 🎉</h1>
+    <p>Tumhe apne dil ki hard disk me permanently save kar liya hai ❤️</p>
+    <p>Na delete hoga, na format hoga 💾</p>
+    <p>Tum meri life ka lifetime backup ho 💖✨</p>
+</div>
+
+<div id="romanticLine" class="cursiveLine">
+This little universe is just a small surprise from someone who loves you endlessly ❤️
+</div>
+
+<script>
+
+var herName = "RANI(QUEEN)"; // ❤️ Yaha uska naam likho
+var canvas = document.getElementById("stars");
+var ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+var stars = [];
+var particles = [];
+var formingName = false;
+
+function checkPassword(){
+    var correctPassword = "12";
+    var userPassword = document.getElementById("password").value;
+
+    if(userPassword === correctPassword){
+        document.body.style.background="black";
+        document.getElementById("loginBox").style.display="none";
+        startStars();
+        startCountdown();
+    }else{
+        alert("Wrong Password 😜 Try Again!");
+    }
+}
+
+function startCountdown(){
+    var count = 5;
+    var countdown = document.getElementById("countdown");
+    countdown.style.display="block";
+
+    var interval=setInterval(function(){
+        countdown.innerHTML="⏳ "+count;
+        count--;
+
+        if(count<0){
+            clearInterval(interval);
+            countdown.style.display="none";
+            showMessage();
+        }
+    },1000);
+}
+
+function showMessage(){
+    var message=document.getElementById("message");
+    message.style.display="block";
+
+    setTimeout(function(){
+        message.style.opacity="1";
+    },100);
+
+    setTimeout(function(){
+        message.style.opacity="0";
+        setTimeout(collectStarsIntoName,3000);
+    },6000);
+}
+
+function startStars(){
+    stars=[];
+    for(var i=0;i<200;i++){
+        stars.push({
+            x:Math.random()*canvas.width,
+            y:Math.random()*canvas.height,
+            radius:Math.random()*2,
+            speed:Math.random()*0.5
+        });
+    }
+    animate();
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="white";
+
+    if(!formingName){
+        stars.forEach(function(s){
+            ctx.beginPath();
+            ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);
+            ctx.fill();
+
+            s.y+=s.speed;
+            if(s.y>canvas.height){
+                s.y=0;
+                s.x=Math.random()*canvas.width;
+            }
+        });
+    }else{
+        particles.forEach(function(p){
+            p.x+=(p.tx-p.x)*0.03;
+            p.y+=(p.ty-p.y)*0.03;
+            ctx.beginPath();
+            ctx.arc(p.x,p.y,2,0,Math.PI*2);
+            ctx.fill();
+        });
+    }
+
+    requestAnimationFrame(animate);
+}
+
+function collectStarsIntoName(){
+    formingName=true;
+    particles=[];
+
+    ctx.font="bold 100px Arial";
+    ctx.textAlign="center";
+    ctx.fillText(herName,canvas.width/2,canvas.height/2);
+
+    var imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    for(let y=0;y<canvas.height;y+=6){
+        for(let x=0;x<canvas.width;x+=6){
+            let index=(y*canvas.width+x)*4;
+            if(imageData.data[index+3]>128){
+                particles.push({
+                    x:Math.random()*canvas.width,
+                    y:Math.random()*canvas.height,
+                    tx:x,
+                    ty:y
+                });
+            }
+        }
+    }
+
+    setTimeout(showFinalLine,4000);
+}
+
+function showFinalLine(){
+    var line=document.getElementById("romanticLine");
+    line.style.opacity="1";
+}
+
+</script>
+
+</body>
+</html>
