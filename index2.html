@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple Quiz Game</title>
+<style>
+body{
+    font-family: Arial;
+    text-align: center;
+    background-color: #f2f2f2;
+}
+.quiz-box{
+    background:white;
+    padding:20px;
+    width:400px;
+    margin:auto;
+    margin-top:100px;
+    border-radius:10px;
+}
+button{
+    padding:10px 20px;
+    margin:10px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="quiz-box">
+<h2>Simple Quiz Game</h2>
+
+<p id="question">Question will appear here</p>
+
+<button onclick="checkAnswer('A')" id="A"></button>
+<button onclick="checkAnswer('B')" id="B"></button>
+<button onclick="checkAnswer('C')" id="C"></button>
+<button onclick="checkAnswer('D')" id="D"></button>
+
+<p id="score"></p>
+</div>
+
+<script>
+
+const quiz = [
+{
+q:"What is the capital of India?",
+A:"Mumbai",
+B:"New Delhi",
+C:"Kolkata",
+D:"Chennai",
+correct:"B"
+},
+{
+q:"Which planet is called the Red Planet?",
+A:"Earth",
+B:"Mars",
+C:"Venus",
+D:"Jupiter",
+correct:"B"
+},
+{
+q:"Which is the largest ocean?",
+A:"Indian Ocean",
+B:"Atlantic Ocean",
+C:"Pacific Ocean",
+D:"Arctic Ocean",
+correct:"C"
+}
+];
+
+let current = 0;
+let score = 0;
+
+function loadQuestion(){
+let q = quiz[current];
+document.getElementById("question").innerText = q.q;
+document.getElementById("A").innerText = q.A;
+document.getElementById("B").innerText = q.B;
+document.getElementById("C").innerText = q.C;
+document.getElementById("D").innerText = q.D;
+}
+
+function checkAnswer(ans){
+if(ans == quiz[current].correct){
+score++;
+}
+
+current++;
+
+if(current < quiz.length){
+loadQuestion();
+}else{
+document.querySelector(".quiz-box").innerHTML =
+"<h2>Your Score: "+score+" / "+quiz.length+"</h2>";
+}
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
